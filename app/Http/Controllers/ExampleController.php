@@ -14,5 +14,7 @@ class ExampleController extends Controller
         //
     }
 
-    //
+    public function show(){
+        return "HOLA";
+    }
 }
