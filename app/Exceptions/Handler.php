@@ -45,6 +45,15 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if ($exception instanceof NotFoundException) {   
+            return response()->json([
+                'exception' => get_class($exception),
+                'message'=>$exception->getMessage(),
+                'path' => $request->path()
+            ], 404);
+        }
+
         return parent::render($request, $exception);
     }
+
 }

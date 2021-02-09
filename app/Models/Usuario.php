@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -23,4 +23,9 @@ class Usuario extends Model
      * @var array
      */
     protected $hidden = [];
+
+    public function roles()
+    {
+        return $this->belongsToMany(Rol::class, 'usuarios_roles', 'usuario_id', 'rol_id');
+    }
 }

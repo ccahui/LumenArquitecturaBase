@@ -2,56 +2,47 @@
 
 namespace App\Http\Controllers;
 
-use App\Usuario;
+use App\Services\UsuarioService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class UsuarioController extends Controller
 {
     private $rulesCreation =  [
-        'nombre'=>'required',
-        'email'=>'required | email ',
+        'nombre' => 'required',
+        'email' => 'required | email ',
     ];
+    private $service;
 
-    public function index(Request $request)
+    public function __construct(UsuarioService $service)
     {
-      return Usuario::all();
+        $this->service = $service;
+    }
+    public function index()
+    {
+        return $this->service->listAll($this->pageSize);
     }
 
     public function store(Request $request)
     {
-    
         $this->validate($request, $this->rulesCreation);
-        
-        $inputs = $request->all();
-        $usuario = Usuario::create($inputs);
-        
-        return $usuario;
+        return $this->service->create($request);
     }
+
     public function show($id)
     {
-        return Usuario::find($id);
+        return $this->service->read($id);
     }
 
     public function update(Request $request, $id)
     {
         $this->validate($request, $this->rulesCreation);
-        
-        $usuario = Usuario::findOrFail($id);
-        $usuario->update($request->all());
-
-        return $usuario;
+        return $this->service->update($request, $id);
     }
 
-    
     public function destroy($id)
     {
-        Usuario::findOrFail($id)->delete();
-        return response('Deleted Successfully', 200);
+        $this->service->delete($id);
     }
+    
 
-    /*Override */
-    protected function buildFailedValidationResponse(Request $request, array $errors) {
-        return response($errors, 400);
-    }
 }

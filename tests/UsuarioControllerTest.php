@@ -1,9 +1,7 @@
 <?php
 
-use App\Http\Controllers\UsuarioController;
-use App\Usuario;
+use App\Models\Usuario;
 use Laravel\Lumen\Testing\DatabaseMigrations;
-use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class UsuarioControllerTest extends TestCase
 {
@@ -53,15 +51,38 @@ class UsuarioControllerTest extends TestCase
         $response->seeJson($body);
     }
 
+    public function test_update404()
+    {
+        $body = ["nombre" => "Kristian", "email" => "kristianccahui@gmail.com"];
+        $id = 999;
+        
+        $url = $this->urlWithId($id);
+        $response = $this->put($url, $body);
+
+        $response->assertResponseStatus(404);
+    }
+
     public function test_show()
     {
         $body = $this->usuario->toArray();
-        $url = route('usuarios');
+
+        $id = $this->usuario->id;
+        $url = $this->urlWithId($id);
      
         $response = $this->get($url);
 
         $response->assertResponseStatus(200);
         $response->seeJson($body);
+    }
+
+    public function test_show404()
+    {
+        
+        $id = 999;
+        $url = $this->urlWithId($id);
+        $response = $this->get($url);
+
+        $response->assertResponseStatus(404);
     }
 
     public function test_delete()
