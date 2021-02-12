@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Rol;
 use App\Models\Usuario;
 use Laravel\Lumen\Testing\DatabaseMigrations;
 
@@ -94,6 +95,30 @@ class UsuarioControllerTest extends TestCase
 
         $response->assertResponseStatus(200);
         $this->notSeeInDatabase($this->tabla, ['id' => $id]);
+    }
+    
+    public function test_delete_idNotExist()
+    {
+        $id = 999;
+        $url = $this->urlWithId($id);
+     
+        $response = $this->delete($url);
+
+        $response->assertResponseStatus(200);
+    }
+
+    
+    public function test_attachRoles()
+    {
+        $role = Rol::create(["nombre"=>"admin"]);
+        $body = [
+            "rolesIds"=> [$role->id],
+        ];
+        $id = $this->usuario->id;
+        
+        $url = $this->urlWithId($id)."/roles";
+        $response = $this->post($url, $body);
+        $response->assertResponseStatus(200);
     }
 
 

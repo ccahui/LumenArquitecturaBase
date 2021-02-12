@@ -22,7 +22,7 @@ class Rol extends Model
      *
      * @var array
      */
-    protected $hidden = [];
+    protected $hidden = ['pivot','created_at', 'updated_at'];
 
     public function roles()
     {

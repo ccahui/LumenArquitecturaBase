@@ -43,6 +43,14 @@ class UsuarioController extends Controller
     {
         $this->service->delete($id);
     }
-    
 
+    public function attachRoles(Request $request, $id)
+    {
+        $rules = [
+            'rolesIds'   => 'array',
+            'rolesIds.*' => 'integer|exists:roles,id',
+        ];
+        $this->validate($request, $rules);
+       return $this->service->attachRoles($request, $id);
+    }
 }

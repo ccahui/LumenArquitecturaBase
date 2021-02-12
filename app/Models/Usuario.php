@@ -22,10 +22,10 @@ class Usuario extends Model
      *
      * @var array
      */
-    protected $hidden = [];
+    protected $hidden = ['created_at', 'updated_at'];
 
     public function roles()
     {
-        return $this->belongsToMany(Rol::class, 'usuarios_roles', 'usuario_id', 'rol_id');
+        return $this->belongsToMany(Rol::class, 'usuarios_roles', 'usuario_id', 'rol_id')->withTimestamps();;
     }
 }

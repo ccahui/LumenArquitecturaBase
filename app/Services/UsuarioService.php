@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Exceptions\NotFoundException;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class UsuarioService 
 {
@@ -24,9 +25,12 @@ class UsuarioService
 
     public function read($id)
     {
-        return $this->find($id);
+        $usuario = $this->find($id);
+        $usuario->load('roles');
+        return $usuario;
+        //return Usuario::with('roles')->find($id);    
     }
-
+    
     public function update(Request $request, $id)
     {        
         $usuario = $this->find($id);
@@ -36,9 +40,19 @@ class UsuarioService
 
     public function delete($id)
     {
-        Usuario::findOrFail($id)->delete();
+        Usuario::destroy($id);
     }
    
+    public function attachRoles(Request $request, $id){
+        $usuario = $this->find($id);
+        $rolesIds = $request->input('rolesIds');
+        
+        $usuario->roles()->sync($rolesIds);
+        $usuario->load('roles');
+        
+        return $usuario;
+    }
+
     private function find($id){
         $usuario = Usuario::find($id);
         if(!$usuario){
