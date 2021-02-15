@@ -60,10 +60,12 @@ $app->singleton(
 // $app->middleware([
 //     App\Http\Middleware\ExampleMiddleware::class
 // ]);
+$app->configure('jwt');
 
-// $app->routeMiddleware([
-//     'auth' => App\Http\Middleware\Authenticate::class,
-// ]);
+$app->routeMiddleware([
+    'auth' => App\Http\Middleware\Authenticate::class,
+    'checkRole'=> App\Http\Middleware\CheckRole::class
+    ]);
 
 /*
 |--------------------------------------------------------------------------
@@ -76,9 +78,11 @@ $app->singleton(
 |
 */
 
-// $app->register(App\Providers\AppServiceProvider::class);
-// $app->register(App\Providers\AuthServiceProvider::class);
-// $app->register(App\Providers\EventServiceProvider::class);
+    //$app->register(App\Providers\AppServiceProvider::class);
+    $app->register(App\Providers\AuthServiceProvider::class);
+    //$app->register(App\Providers\EventServiceProvider::class);
+    $app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
+//    $app->register(Chuckrincon\LumenConfigDiscover\DiscoverServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------

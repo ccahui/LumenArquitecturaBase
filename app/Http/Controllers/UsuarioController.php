@@ -10,6 +10,11 @@ class UsuarioController extends Controller
     private $rulesCreation =  [
         'nombre' => 'required',
         'email' => 'required | email ',
+        'password'=> 'required'
+    ];
+    private $rulesUpdate =  [
+        'nombre' => 'required',
+        'email' => 'required | email ',
     ];
     private $service;
 
@@ -17,8 +22,21 @@ class UsuarioController extends Controller
     {
         $this->service = $service;
     }
-    public function index()
+
+    public function login(Request $request)
     {
+        $this->validate($request, [
+            'email' => 'required|string',
+            'password' => 'required',
+        ]);
+
+        $credentials = $request->only(['email', 'password']);
+        return $this->service->login($credentials);
+    }
+    
+
+    public function index()
+    {   
         return $this->service->listAll($this->pageSize);
     }
 
@@ -35,7 +53,7 @@ class UsuarioController extends Controller
 
     public function update(Request $request, $id)
     {
-        $this->validate($request, $this->rulesCreation);
+        $this->validate($request, $this->rulesUpdate);
         return $this->service->update($request, $id);
     }
 

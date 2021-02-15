@@ -6,7 +6,9 @@
     "type": "project",
     "require": {
         "php": ">=7.1.3",
-        "laravel/lumen-framework": "5.8.*"
+        "chuckrincon/lumen-config-discover": "^1.0",
+        "laravel/lumen-framework": "5.8.*",
+        "tymon/jwt-auth": "^1.0"
     },
     "require-dev": {
         "fzaninotto/faker": "^1.4",

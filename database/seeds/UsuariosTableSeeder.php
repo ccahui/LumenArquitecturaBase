@@ -3,6 +3,7 @@
 use App\Models\Usuario;
 use Illuminate\Database\Seeder;
 use Faker\Generator as Faker;
+use Illuminate\Support\Facades\Hash;
 
 class UsuariosTableSeeder extends Seeder
 {
@@ -17,8 +18,16 @@ class UsuariosTableSeeder extends Seeder
             $data = [
                 "nombre" => $faker->name,
                 "email" => $faker->email,
+                "password" => Hash::make('123456'),
             ];
             Usuario::create($data);
         }
+
+        $data = [
+            "nombre" => $faker->name,
+            "email" => "test@example.com",
+            "password" => Hash::make('123456'),
+        ];
+        Usuario::create($data);
     }
 }

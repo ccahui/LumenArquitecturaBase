@@ -5,30 +5,40 @@ namespace App\Services;
 use App\Exceptions\NotFoundException;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UsuarioService 
 {
-
     public function listAll($pageSize)
     {
       return Usuario::paginate($pageSize);
     }
 
+    public function login($credentials){
+        if (! $token = Auth::attempt($credentials)) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+        return $this->respondWithToken($token);
+    }
+    
     public function create(Request $request)
     {   
-        $inputs = $request->all();
-        $usuario = Usuario::create($inputs);
+        $user = new Usuario;
+        $user->nombre = $request->input('nombre');
+        $user->email = $request->input('email');
+        $plainPassword = $request->input('password');
+        $user->password = Hash::make($plainPassword);
         
-        return $usuario;
+        $user->save();
+        return $user;
     }
 
     public function read($id)
     {
         $usuario = $this->find($id);
         $usuario->load('roles');
-        return $usuario;
-        //return Usuario::with('roles')->find($id);    
+        return $usuario;   
     }
     
     public function update(Request $request, $id)
@@ -59,5 +69,14 @@ class UsuarioService
             throw new NotFoundException("Usuario id ($id)");
         }
         return $usuario;
+    }
+
+    protected function respondWithToken($token)
+    {
+        return response()->json([
+            'token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => Auth::factory()->getTTL() * 60
+        ], 200);
     }
 }

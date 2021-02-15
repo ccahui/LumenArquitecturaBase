@@ -12,14 +12,17 @@
 */
 
 use App\Http\Controllers\UsuarioController;
+use App\Models\TypeRoles;
 
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
+
+$router->post('/api/login', ['uses' => 'UsuarioController@login', 'as' => "login"]);
 $router->group(['prefix' => 'api'], function () use ($router) {
 
-    $router->group([], function () use ($router) {
+    $router->group(['middleware' => ['auth', "checkRole:" . TypeRoles::ADMIN ]], function () use ($router) {
         $router->get('/usuarios',  ['uses' => 'UsuarioController@index', 'as' => 'usuarios']);
         $router->get('/usuarios/{id}', ['uses' => 'UsuarioController@show']);
         $router->post('/usuarios', ['uses' => 'UsuarioController@store']);
@@ -27,5 +30,4 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->put('/usuarios/{id}', ['uses' => 'UsuarioController@update']);
         $router->post('/usuarios/{id}/roles', ['uses' => 'UsuarioController@attachRoles']);
     });
-
 });
